@@ -1,28 +1,29 @@
-package com.rideal.ridealbackend.domain;
+package com.rideal.api.ridealBackend.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotNull;
 
-@Document(collection = "users")
+@Builder
+@Document(collection = "cities")
 @Data
 @Entity
-public class Person {
+@AllArgsConstructor
+public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
-
+    String id;
     @NotNull
-    @Column(columnDefinition = "VARCHAR", length = 100)
-    private String name;
-
-    public Person(String name) {
-        this.name = name;
-    }
+    String name;
+    @NotNull
+    int postalCod;
+    @NotNull
+    String country;
 }
