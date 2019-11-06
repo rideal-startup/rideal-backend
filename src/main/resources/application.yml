@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://admin:rideal2019@ds149596.mlab.com:49596/rideal?retryWrites=false
