@@ -1,4 +1,6 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://admin:rideal2019@ds149596.mlab.com:49596/rideal?retryWrites=false
+      uri: mongodb://${USERNAME}:${PASSWORD}@ds149596.mlab.com:49596/rideal?retryWrites=false
+    rest:
+      base-path: /api
