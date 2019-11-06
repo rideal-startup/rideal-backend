@@ -8,11 +8,11 @@
 		<version>2.1.2.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.teamcode.api</groupId>
-	<artifactId>teamcodeBE</artifactId>
+	<groupId>com.rideal.api.ridealBackend</groupId>
+	<artifactId>ridealBackend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>teamcodeBE</name>
-	<description>Project for Spring Boot Teamcode application</description>
+	<name>Rideal Backend</name>
+	<description>Project for Spring Boot Rideal application</description>
 
 	<properties>
 		<java.version>1.8</java.version>
