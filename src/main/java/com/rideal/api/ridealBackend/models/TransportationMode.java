@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.validation.constraints.NotNull;
 
 @Builder
 @Document(collection = "cities")
@@ -19,4 +20,6 @@ public class TransportationMode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     String id;
+    @NotNull
+    String name;
 }
