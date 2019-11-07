@@ -6,3 +6,7 @@ sudo: required
 branches:
   only:
     - master
+
+script:
+  - mvn dependency:purge-local-repository
+  - mvn test -B
