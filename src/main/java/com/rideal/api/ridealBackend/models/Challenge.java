@@ -11,15 +11,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotNull;
 
+
+@AllArgsConstructor
 @Builder
-@Document(collection = "cities")
+@Document(collection = "challenges")
 @Data
 @Entity
-@AllArgsConstructor
-public class TransportationMode {
+public class Challenge {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    String id;
+    private String id;
     @NotNull
-    String name;
+    private String name;
+    @NotNull
+    private String description;
+    @NotNull
+    private int goal;
+    @NotNull
+    private String unit;
+    @NotNull
+    private long timestamp;
+    @NotNull
+    private String city_id;
+    @NotNull
+    private int prize;
 }
