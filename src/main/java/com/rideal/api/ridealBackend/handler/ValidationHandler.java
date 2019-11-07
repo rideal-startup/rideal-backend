@@ -1,5 +1,6 @@
 package com.rideal.api.ridealBackend.handler;
 
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import com.rideal.api.ridealBackend.errors.ApiError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,13 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
         return new ResponseEntity<Object>(
                 apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    @ExceptionHandler({ Exception.class })
+    public ResponseEntity<Object> habdleAll(Exception ex, WebRequest request) {
+        ApiError apiError =
+                new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "An error occurred ¯\\_(ツ)_/¯");
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
 }
