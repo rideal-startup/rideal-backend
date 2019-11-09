@@ -1,12 +1,14 @@
 language: java
 jdk:
-  - oraclejdk9
-sudo: required
-
-branches:
-  only:
-    - master
-    - develop
+  - openjdk9
 
 script:
-  - sudo /usr/local/maven/bin/mvn clean package
+  - mvn jacoco:prepare-agent test
+
+after_success:
+  - mvn prepare-package -DskipTests=true
+  - mvn jacoco:report coveralls:report
+
+cache:
+  directories:
+  - $HOME/.m2
