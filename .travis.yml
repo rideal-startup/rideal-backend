@@ -6,7 +6,7 @@ sudo: required
 branches:
   only:
     - master
+    - develop
 
 script:
-  - mvn dependency:purge-local-repository
-  - mvn test -B
+  - sudo /usr/local/maven/bin/mvn clean package
