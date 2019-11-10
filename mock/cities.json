@@ -1,0 +1,14 @@
+[
+  {
+    "id": "1",
+    "name": "Lleida",
+    "postalCod": 1234,
+    "country": "Spain"
+  },
+  {
+    "id": "2",
+    "name": "Barcelona",
+    "postalCod": 1234,
+    "country": "Spain"
+  }
+]

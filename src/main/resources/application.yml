@@ -4,3 +4,12 @@ spring:
       uri: mongodb://${USERNAME}:${PASSWORD}@ds149596.mlab.com:49596/rideal?retryWrites=false
     rest:
       base-path: /api
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  security:
+    user:
+      name: user
+      password: ${SEC_PASSWORD}
+      role: admin

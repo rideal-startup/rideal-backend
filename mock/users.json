@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Guillem",
+    "surname": "Orellana",
+    "city": "/api/cities/2",
+    "email": "got2@alumnes.udl.cat",
+    "points": 0
+  },
+  {
+    "name": "Jordi",
+    "surname": "Onrubia",
+    "city": "/api/cities/2",
+    "email": "nose@alumnes.udl.cat",
+    "points": 0
+  },
+  {
+    "name": "Marcel",
+    "surname": "Ortiz",
+    "city": "/api/cities/2",
+    "email": "nose@alumnes.udl.cat",
+    "points": 0
+  },
+  {
+    "name": "Ricard",
+    "surname": "Cervera",
+    "city": "/api/cities/2",
+    "email": "nose@alumnes.udl.cat",
+    "points": 0
+  }
+]
