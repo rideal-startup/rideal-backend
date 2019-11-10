@@ -23,7 +23,7 @@ public class City {
     @NotNull
     String name;
     @NotNull
-    int postalCod;
+    Integer postalCod;
     @NotNull
     String country;
 }

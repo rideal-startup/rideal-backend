@@ -12,5 +12,5 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RepositoryRestResource(collectionResourceRel = "transportationModes", path = "transportationModes")
 public interface TransportationModeRepository extends CrudRepository<TransportationMode, String> {
-    Optional<TransportationMode> findById(@RequestParam("id") String id);
+    Optional<TransportationMode> findById(String id);
 }

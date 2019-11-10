@@ -11,5 +11,5 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RepositoryRestResource(collectionResourceRel = "stops", path = "stops")
 public interface StopRepository extends CrudRepository<Stop, String> {
-    Optional<Stop> findById(@RequestParam("id") String id);
+    Optional<Stop> findById(String id);
 }
