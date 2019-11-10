@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Builder
@@ -20,14 +21,14 @@ import javax.validation.constraints.NotNull;
 public class Stop {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    String id;
+    private String id;
+    @NotBlank
+    private String name;
     @NotNull
-    String name;
+    private GeoJson location;
     @NotNull
-    GeoJson location;
+    private Long avgWaitTime;
     @NotNull
-    long avg_wait_time;
-    @NotNull
-    boolean available;
+    private Boolean available;
 }
 

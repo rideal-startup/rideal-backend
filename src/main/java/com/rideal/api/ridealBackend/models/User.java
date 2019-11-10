@@ -11,6 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
@@ -23,14 +24,14 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-    @NotNull
+    @NotBlank
     private String name;
-    @NotNull
+    @NotBlank
     private String surname;
     @NotNull
-    private long city_id;
-    @NotNull
+    private City city;
+    @NotBlank
     private String email;
     @NotNull
-    private int points;
+    private Integer points;
 }

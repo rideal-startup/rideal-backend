@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 
@@ -21,18 +22,18 @@ public class Challenge {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-    @NotNull
+    @NotBlank
     private String name;
-    @NotNull
+    @NotBlank
     private String description;
     @NotNull
-    private int goal;
-    @NotNull
+    private Integer goal;
+    @NotBlank
     private String unit;
     @NotNull
-    private long timestamp;
+    private Long timestamp;
     @NotNull
-    private String city_id;
+    private City city;
     @NotNull
     private int prize;
 }
