@@ -12,5 +12,5 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RepositoryRestResource(collectionResourceRel = "challenges", path = "challenges")
 public interface ChallengeRepository extends CrudRepository<Challenge, String> {
-    Optional<Challenge> findById(@RequestParam("id") String id);
+    Optional<Challenge> findById(String id);
 }
