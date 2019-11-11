@@ -13,3 +13,8 @@ spring:
       name: user
       password: ${SEC_PASSWORD}
       role: admin
+
+rideal:
+  passwords:
+    db_manager: ${DB_MANAGER_PASSWORD}
+    developer: ${DEVELOPER_PASSWORD}
