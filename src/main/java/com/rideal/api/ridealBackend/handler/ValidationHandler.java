@@ -32,11 +32,11 @@ public class ValidationHandler extends ResponseEntityExceptionHandler {
                 apiError, new HttpHeaders(), apiError.getStatus());
     }
 
-    @ExceptionHandler({ Exception.class })
+    /*@ExceptionHandler({ Exception.class })
     public ResponseEntity<ApiError> handleAll(Exception ex, WebRequest request) {
         ApiError apiError =
                 new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "An error occurred ¯\\_(ツ)_/¯");
         return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
-    }
+    }*/
 
 }

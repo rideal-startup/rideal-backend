@@ -12,10 +12,8 @@ import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Builder
 @Document(collection = "cities")
 @Data
-@Entity
 @AllArgsConstructor
 public class TransportationMode {
     @Id

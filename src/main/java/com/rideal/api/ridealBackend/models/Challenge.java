@@ -14,10 +14,8 @@ import javax.validation.constraints.NotNull;
 
 
 @AllArgsConstructor
-@Builder
 @Document(collection = "challenges")
 @Data
-@Entity
 public class Challenge {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

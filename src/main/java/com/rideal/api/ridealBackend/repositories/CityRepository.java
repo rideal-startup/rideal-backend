@@ -12,5 +12,4 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RepositoryRestResource(collectionResourceRel = "cities", path = "cities")
 public interface CityRepository extends MongoRepository<City, String> {
-    // Optional<City> findById(String id);
 }

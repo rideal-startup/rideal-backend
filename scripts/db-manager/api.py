@@ -32,6 +32,7 @@ class API(object):
   def delete_all(self, path: str):
     instances = self.get(path)
     responses = []
+
     for i in instances['_embedded'][path]:
       url = self.host + path + '/' + i['id']
       print(url)

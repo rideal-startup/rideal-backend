@@ -1,12 +1,8 @@
 package com.rideal.api.ridealBackend.models;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.deser.impl.ObjectIdReferenceProperty;
-import com.rideal.api.ridealBackend.repositories.CityRepository;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,7 +11,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -43,8 +38,6 @@ public class User implements UserDetails, Serializable {
 
     @NotNull
     @DBRef
-    @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-    @JsonIdentityReference(alwaysAsId=true)
     private City city;
 
     @NotBlank

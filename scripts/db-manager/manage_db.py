@@ -45,6 +45,12 @@ def read_collection(collection):
   res = [pprint_dict(collection, d) for d in res]
   print('\n'.join(res))
 
+
+@main.command()
+@click.argument('collection')
+def delete_collection(collection):
+  api.delete_all(collection)
+
 if __name__ == "__main__":
   api = API()
   main()
