@@ -1,8 +1,6 @@
 package com.rideal.api.ridealBackend.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,6 +14,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 public class City {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

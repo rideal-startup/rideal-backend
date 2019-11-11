@@ -1,12 +1,9 @@
 package com.rideal.api.ridealBackend.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +17,7 @@ import javax.validation.constraints.NotNull;
 @Document(collection = "users")
 @Data
 @Entity
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,6 +27,7 @@ public class User {
     @NotBlank
     private String surname;
     @NotNull
+    @JsonIdentityReference(alwaysAsId = true)
     private City city;
     @NotBlank
     private String email;

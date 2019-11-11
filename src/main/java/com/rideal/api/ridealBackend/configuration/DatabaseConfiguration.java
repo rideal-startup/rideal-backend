@@ -1,5 +1,6 @@
 package com.rideal.api.ridealBackend.configuration;
 
+import com.rideal.api.ridealBackend.models.City;
 import com.rideal.api.ridealBackend.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ public class DatabaseConfiguration implements RepositoryRestConfigurer {
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
         config.exposeIdsFor(User.class);
+        config.exposeIdsFor(City.class);
     }
 
     @Autowired
