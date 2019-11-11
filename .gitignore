@@ -39,3 +39,8 @@ buildNumber.properties
 ### Avoid uploading sensitive data ###
 /application.yml
 /src/main/resources/application.yml
+
+# Python
+__pychache__/
+venv/
+*.pyc

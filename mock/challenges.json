@@ -1,0 +1,26 @@
+[
+  {
+    "name": "Test challenge",
+    "goal": 1000,
+    "units": "km",
+    "timestamp": 10000,
+    "city": "/api/cities/1",
+    "prize": "/api/prizes/1"
+  },
+  {
+    "name": "Test challenge 1",
+    "goal": 50,
+    "units": "km",
+    "timestamp": 10000,
+    "city": "/api/cities/1",
+    "prize": "/api/prizes/1"
+  },
+  {
+    "name": "Test challenge 2",
+    "goal": 100,
+    "units": "km",
+    "timestamp": 10000,
+    "city": "/api/cities/2",
+    "prize": "/api/prizes/1"
+  }
+]

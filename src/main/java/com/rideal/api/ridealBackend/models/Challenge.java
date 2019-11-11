@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 
 
 @AllArgsConstructor
-@Builder
 @Document(collection = "challenges")
 @Data
 public class Challenge {

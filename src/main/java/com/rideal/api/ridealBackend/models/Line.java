@@ -13,10 +13,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
-@Builder
 @Document(collection = "cities")
 @Data
-@Entity
 @AllArgsConstructor
 public class Line {
     @Id

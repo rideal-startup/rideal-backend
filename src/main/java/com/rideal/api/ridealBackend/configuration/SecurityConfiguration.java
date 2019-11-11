@@ -49,6 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .withUser("db_manager").password(encoder().encode(dbManagerPass)).roles("DB_MANAGER")
             .and()
             .withUser("developer").password(encoder().encode(developerPass)).roles("DEVELOPER");
+
         LOGGER.info("Profiles created:\n" +
                 "\t- ADMIN: username: admin, password: " + adminPass +"\n" +
                 "\t- DB_MANAGER: username: db_manager, password: " + dbManagerPass + "\n" +
