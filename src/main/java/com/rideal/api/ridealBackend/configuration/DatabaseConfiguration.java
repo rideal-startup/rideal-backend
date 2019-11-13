@@ -20,6 +20,7 @@ public class DatabaseConfiguration extends RepositoryRestConfigurerAdapter {
         config.exposeIdsFor(Stop.class);
         config.exposeIdsFor(Company.class);
         config.exposeIdsFor(Challenge.class);
+        config.exposeIdsFor(Line.class);
         config.exposeIdsFor(TransportationMode.class);
     }
 

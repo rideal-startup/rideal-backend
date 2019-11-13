@@ -12,4 +12,5 @@ import java.util.Optional;
 @RepositoryRestResource(collectionResourceRel = "stops", path = "stops")
 public interface StopRepository extends CrudRepository<Stop, String> {
     Optional<Stop> findById(String id);
+    Optional<Stop> findByName(String name);
 }

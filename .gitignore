@@ -44,3 +44,5 @@ buildNumber.properties
 __pychache__/
 venv/
 *.pyc
+
+data/

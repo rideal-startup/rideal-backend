@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 
-@Document(collection = "cities")
+@Document(collection = "lines")
 @Data
 @AllArgsConstructor
 public class Line {
