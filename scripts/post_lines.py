@@ -18,9 +18,11 @@ def _get_stop(stop_name):
 
 
 def _create_line(l):
+  city = requests.get('http://localhost:8080/api/cities/search/'
+                      'findByName?name=Lleida').json()['id']
   body = dict(
     name=l['name'],
-    city='/cities/1'
+    city='/cities/' + city,
     availableOnFreeDays=l.get('availableOnFreeDays', True),
     lengthKm=0,
     journeyMeanTime=0,
