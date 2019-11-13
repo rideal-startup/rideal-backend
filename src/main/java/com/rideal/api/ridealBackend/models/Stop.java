@@ -26,7 +26,6 @@ public class Stop implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
-    @Indexed(unique=true)
     @NotBlank
     private String name;
     @NotNull
@@ -35,8 +34,7 @@ public class Stop implements Serializable {
     private Coordinates location;
     @NotNull
     private Long avgWaitTime;
-
-    @DBRef
-    private Stop next;
+    @NotNull
+    private Integer order;
 }
 

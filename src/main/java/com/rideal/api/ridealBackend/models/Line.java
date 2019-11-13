@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.List;
 
 @Document(collection = "lines")
@@ -33,7 +34,5 @@ public class Line {
     @NotNull
     private Boolean onFreeDays;
 
-    @DBRef
-    @NotNull
-    private List<Stop> stops;
+    private List<Stop> stops = Collections.emptyList();
 }
