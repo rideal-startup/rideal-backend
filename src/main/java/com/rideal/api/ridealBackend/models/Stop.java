@@ -33,7 +33,7 @@ public class Stop implements Serializable {
     @Valid
     private Coordinates location;
     @NotNull
-    private Long avgWaitTime;
+    private Long waitTime;
     @NotNull
     private Integer order;
 }

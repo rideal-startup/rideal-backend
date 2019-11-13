@@ -18,7 +18,7 @@ public interface LineRepository extends CrudRepository<Line, String> {
     Optional<List<Line>> findByCity(String city);
     Optional<List<Line>> findByAvailable();
     @Query("SELECT l FROM Line WHERE l.available = true and l.onFreeDays = true")
-    Optional<List<Line>> findByIsFreeDay();
+    Optional<List<Line>> findByOnFreeDay();
     @Query("SELECT * FROM Line WHERE l.available = true")
-    Optional<List<Line>> findByIsNotFreeDay();
+    Optional<List<Line>> findByNotOnFreeDay();
 }
