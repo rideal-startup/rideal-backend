@@ -1,7 +1,7 @@
 package com.rideal.api.ridealBackend.repositories;
 
 import com.rideal.api.ridealBackend.models.Company;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.repository.CrudRepository;
 
-public interface CompanyRepository extends MongoRepository<Company, String> {
+public interface CompanyRepository extends CrudRepository<Company, String> {
 }
