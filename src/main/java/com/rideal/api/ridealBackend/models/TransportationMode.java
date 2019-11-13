@@ -12,7 +12,7 @@ import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Document(collection = "cities")
+@Document(collection = "transportationModes")
 @Data
 @AllArgsConstructor
 public class TransportationMode {

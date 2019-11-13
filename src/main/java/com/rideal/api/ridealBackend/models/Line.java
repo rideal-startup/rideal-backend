@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Document(collection = "cities")
+@Document(collection = "lines")
 @Data
 @AllArgsConstructor
 public class Line {
@@ -31,7 +31,7 @@ public class Line {
     @NotNull
     private City city;
     @NotNull
-    private boolean onFreeDays;
+    private Boolean onFreeDays;
 
     @DBRef
     @NotNull
