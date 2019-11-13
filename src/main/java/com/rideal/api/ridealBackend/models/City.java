@@ -1,15 +1,10 @@
 package com.rideal.api.ridealBackend.models;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Index;
@@ -28,7 +23,7 @@ public class City implements Serializable {
     @Indexed(unique = true)
     private String name;
     @NotNull
-    private Integer postalCod;
+    private Integer postalCode;
     @NotNull
     private String country;
 }
