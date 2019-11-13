@@ -18,14 +18,10 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Builder
-@Document(collection = "stops")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Stop implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
     @NotBlank
     private String name;
     @NotNull
