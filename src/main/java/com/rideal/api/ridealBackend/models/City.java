@@ -25,7 +25,7 @@ public class City implements Serializable {
     @NotNull
     private String name;
     @NotNull
-    private Integer postalCod;
+    private Integer postalCode;
     @NotNull
     private String country;
 }

@@ -19,7 +19,7 @@ public class Prize {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
     @NotNull
-    private int amount;
+    private Integer amount;
     @NotNull
     private String name;
     @NotNull
