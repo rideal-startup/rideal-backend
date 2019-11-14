@@ -13,4 +13,6 @@ import java.util.Optional;
 @RepositoryRestResource(collectionResourceRel = "users", path = "users")
 public interface UserRepository extends CrudRepository<User, String> {
     Optional<User> findById(String id);
+    Optional<User> findByUsername(String username);
+    Boolean existsByUsername(String username);
 }

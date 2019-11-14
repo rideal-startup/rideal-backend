@@ -1,7 +1,10 @@
 package com.rideal.api.ridealBackend.models;
 
-import com.fasterxml.jackson.annotation.*;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -12,7 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -44,60 +49,46 @@ public class User implements UserDetails, Serializable {
     @Email
     private String email;
 
-    @NotNull
-    private Integer points;
+    private Integer points = 0;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank @Length(min=8, max=256)
+    @NotBlank
+    @Length(min = 8, max = 256)
     private String password;
-
-    public String getId() {
-        return id;
-    }
 
     public String getUsername() {
         return name + "#" + id.substring(0, 4);
     }
 
-    /**
-     * Checks if Account has not expired.
-     * @return true.
-     */
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-    /**
-     * Checks if Account is not locked.
-     * @return true.
-     */
+    @JsonIgnore
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-    /**
-     * Checks if credentials are not expired.
-     * @return true.
-     */
+    @JsonIgnore
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-    /**
-     * Checks if Account is enabled.
-     * @return true.
-     */
+    @JsonIgnore
     @Override
-
-    public boolean isEnabled() { return true; }
-
-
-    @Override
-    @Transient
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
+    public boolean isEnabled() {
+        return true;
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    @JsonIgnore
+    @Transient
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
     }
 
     public void encodePassword() {

@@ -14,8 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+
 import static java.lang.String.format;
 
 @Component
@@ -45,19 +46,19 @@ public class WebSocketEventListener {
     }
 
     @SuppressWarnings("unchecked")
-    private static Map<String,String> parseJsonWithGson(String jsonData) {
+    private static Map<String, String> parseJsonWithGson(String jsonData) {
         Gson gson = new Gson();
         JsonParser parser = new JsonParser();
         JsonObject object = parser.parse(jsonData).getAsJsonObject();
         Map<String, Object> result = gson.fromJson(object, Map.class);
-        Map<String,String> map = new HashMap<>();
-        for (Map.Entry<String,Object> entry:result.entrySet()){
-            map.put(entry.getKey(),mapToJson(entry.getValue()));
+        Map<String, String> map = new HashMap<>();
+        for (Map.Entry<String, Object> entry : result.entrySet()) {
+            map.put(entry.getKey(), mapToJson(entry.getValue()));
         }
         return map;
     }
 
-    private static String mapToJson(Object o){
+    private static String mapToJson(Object o) {
         Gson gson = new Gson();
         return gson.toJson(o);
     }
@@ -68,11 +69,11 @@ public class WebSocketEventListener {
 
         System.out.println("OK");
         String username = (headerAccessor.getSessionAttributes() == null) ?
-            "Unknown" : headerAccessor.getSessionAttributes().get("username") == null ?
+                "Unknown" : headerAccessor.getSessionAttributes().get("username") == null ?
                 "Unknown" : (String) headerAccessor.getSessionAttributes().get("username");
 
         String roomId = (headerAccessor.getSessionAttributes() == null) ?
-            "Unknown" : headerAccessor.getSessionAttributes().get("room_id") == null ?
+                "Unknown" : headerAccessor.getSessionAttributes().get("room_id") == null ?
                 "Unknown" : (String) headerAccessor.getSessionAttributes().get("room_id");
 
         if (headerAccessor.getSessionAttributes() != null) {
