@@ -1,7 +1,6 @@
 package com.rideal.api.ridealBackend.configuration;
 
-import com.rideal.api.ridealBackend.components.RestAuthenticationEntryPoint;
-import com.rideal.api.ridealBackend.handlers.SuccessHandler;
+import com.rideal.api.ridealBackend.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -10,28 +9,19 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.logging.Logger;
+import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final static Logger LOGGER = Logger.getLogger(SecurityConfiguration.class.getName());
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
-
-    @Autowired
-    private SuccessHandler successHandler;
-
-    private SimpleUrlAuthenticationFailureHandler failureHandler = new SimpleUrlAuthenticationFailureHandler();
+    private final BasicUserDetailsService userDetailsService;
 
     @Value("${spring.security.user.password}")
     private String adminPass;
@@ -42,35 +32,52 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${rideal.passwords.developer}")
     private String developerPass;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("admin").password(encoder().encode(adminPass)).roles("ADMIN")
-                .and()
-                .withUser("db_manager").password(encoder().encode(dbManagerPass)).roles("DB_MANAGER")
-                .and()
-                .withUser("developer").password(encoder().encode(developerPass)).roles("DEVELOPER");
-
-        LOGGER.info("Profiles created:\n" +
-                "\t- ADMIN: username: admin, password: " + adminPass + "\n" +
-                "\t- DB_MANAGER: username: db_manager, password: " + dbManagerPass + "\n" +
-                "\t- DEVELOPER: username: developer, password: " + developerPass);
+    public SecurityConfiguration(BasicUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return User.passwordEncoder;
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+                .withUser("admin").password(passwordEncoder().encode(adminPass)).roles("ADMIN")
+                .and()
+                .withUser("db_manager").password(passwordEncoder().encode(dbManagerPass)).roles("DB_MANAGER")
+                .and()
+                .withUser("developer").password(passwordEncoder().encode(developerPass)).roles("DEVELOPER");
+        auth
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .exceptionHandling()
-                .authenticationEntryPoint(restAuthenticationEntryPoint)
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**")
-                .permitAll();
+                .anyRequest().permitAll()
+                .and()
+                .httpBasic().realmName("Rideal")
+                .and()
+                .cors()
+                .and()
+                .csrf().disable()
+                .headers().frameOptions().sameOrigin();
     }
 }

@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface CompanyRepository extends CrudRepository<Company, String> {
-    Optional<Company> findByUsername(String username);
-    Boolean existsByUsername(String username);
+    Boolean existsByEmail(String username);
+    Optional<Company> findByEmail(String email);
 }

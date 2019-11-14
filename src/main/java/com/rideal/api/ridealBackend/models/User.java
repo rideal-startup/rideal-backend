@@ -1,8 +1,8 @@
 package com.rideal.api.ridealBackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -24,37 +25,40 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "rideal-users")
-@Data
+@MappedSuperclass
 public class User implements UserDetails, Serializable {
     public static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    protected String id;
 
     @NotBlank
-    private String name;
+    protected String name;
 
     @NotBlank
-    private String surname;
+    protected String surname;
 
     @NotNull
     @DBRef
-    private City city;
+    protected City city;
 
     @NotBlank
     @Email
-    private String email;
+    protected String email;
 
-    private Integer points = 0;
+    @Builder.Default
+    protected Integer points = 0;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank
     @Length(min = 8, max = 256)
-    private String password;
+    protected String password;
 
     public String getUsername() {
         return name + "#" + id.substring(0, 4);
