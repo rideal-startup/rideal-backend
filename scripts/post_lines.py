@@ -1,37 +1,31 @@
 import requests
 import json
 
+import click
+
 import utm
+
+import api
 
 
 def _to_lat_lng(x, y, zone=31, letter='T'):
   return utm.to_latlon(x, y, zone, letter)
 
 
-def _get_stop(stop_name):
-  res = requests.get(
-      'http://localhost:8080/api/stops/'
-      'search/findbyName?name=' + stop_name)
-  if res.status_code == 200:
-    return res.json()
-  return None
-
-
 def _create_line(l):
-  city = requests.get('http://localhost:8080/api/cities/search/'
-                      'findByName?name=Lleida').json()['id']
+  city = rideal_api.findBy('name', 'Lleida', 'lines')
+  city = city['id']
+  
   body = dict(
     name=l['name'],
     city='/cities/' + city,
-    availableOnFreeDays=l.get('availableOnFreeDays', True),
-    lengthKm=0,
+    onFreeDays=l.get('availableOnFreeDays', True),
+    length=0,
     journeyMeanTime=0,
     available=True, 
     stops=l['stops']
   )
-  res = requests.post('http://localhost:8080/api/lines', json=body)
-  assert res.status_code < 300
-  return res.json()['id']
+  rideal_api.create('lines', body)
 
 
 def _mutate_stop(s, order):
@@ -42,27 +36,20 @@ def _mutate_stop(s, order):
   s['order'] = order
   return s
 
+@click.argument('lines_path', 
+                help='Path to file containing lines data',
+                type=click.Path(exists=True, dir_okay=False))
+def main(lines_path):
+  rideal_api.delete_collection('lines')
 
-def _delete_all(collection: str):
-  instances = requests.get('http://localhost:8080/api/' + collection)
-  instances = instances.json()
-  responses = []
+  lines = json.load(open(lines_path, encoding='utf-8'))
 
-  for i in instances['_embedded'][collection]:
-    url = API_URL + collection + '/' + i['id']
-    res = requests.delete(url)
-    responses.append(res)
-  
-  if any([r.status_code > 300 for r in responses]):
-    print("Some request have failed")
+  for l in lines:
+    l['stops'] = [_mutate_stop(s, i) 
+                  for i, s in enumerate(l['stops'], start=1)]
+    _create_line(l)
 
 
-_delete_all('stops')
-_delete_all('lines')
-
-lines = json.load(open('data/mock/lines.json', encoding='utf-8'))
-
-for l in lines:
-  l['stops'] = [_mutate_stop(s, i) 
-                for i, s in enumerate(l['stops'], start=1)]
-  _create_line(l)
+if __name__ == "__main__":
+    rideal_api = api.API()
+    main()
