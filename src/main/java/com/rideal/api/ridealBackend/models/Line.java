@@ -23,19 +23,35 @@ public class Line implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
+
     @NotBlank
     private String name;
+
+    @NotBlank
+    private String color;
+
     @NotNull
     private Float length;
-    @NotNull
-    private Long journeyMeanTime;
+
     @NotNull
     private Boolean available;
-    @DBRef
-    @NotNull
-    private City city;
+
     @NotNull
     private Boolean onFreeDays;
 
+    @DBRef
+    @NotNull
+    private City city;
+
+    @NotNull
+    public LineType routeType;
+
     private List<Stop> stops = Collections.emptyList();
+
+
+    public static enum LineType {
+        UNIDIRECTIONAL,
+        BIDIRECTIONAL,
+        CIRCULAR
+    }
 }

@@ -1,12 +1,14 @@
 package com.rideal.api.ridealBackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -32,11 +34,16 @@ import java.util.Collection;
 @Document(collection = "rideal-users")
 @MappedSuperclass
 public class User implements UserDetails, Serializable {
+
     public static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected String id;
+
+    @NotBlank
+    @Indexed(unique = true)
+    protected String username;
 
     @NotBlank
     protected String name;
@@ -55,14 +62,10 @@ public class User implements UserDetails, Serializable {
     @Builder.Default
     protected Integer points = 0;
 
-    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank
     @Length(min = 8, max = 256)
     protected String password;
-
-    public String getUsername() {
-        return name + "#" + id.substring(0, 4);
-    }
 
     @Override
     @JsonIgnore
@@ -93,9 +96,5 @@ public class User implements UserDetails, Serializable {
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
-    }
-
-    public void encodePassword() {
-        this.password = passwordEncoder.encode(this.password);
     }
 }

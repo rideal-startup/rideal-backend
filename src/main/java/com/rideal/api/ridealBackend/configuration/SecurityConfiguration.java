@@ -1,6 +1,10 @@
 package com.rideal.api.ridealBackend.configuration;
 
+import com.rideal.api.ridealBackend.models.Company;
 import com.rideal.api.ridealBackend.models.User;
+import com.rideal.api.ridealBackend.repositories.CityRepository;
+import com.rideal.api.ridealBackend.repositories.CompanyRepository;
+import com.rideal.api.ridealBackend.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +20,16 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final BasicUserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
+    private final CityRepository cityRepository;
 
     @Value("${spring.security.user.password}")
     private String adminPass;
@@ -32,16 +40,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Value("${rideal.passwords.developer}")
     private String developerPass;
 
-    public SecurityConfiguration(BasicUserDetailsService userDetailsService) {
+    public SecurityConfiguration(BasicUserDetailsService userDetailsService,
+                                 UserRepository userRepository,
+                                 CompanyRepository companyRepository, CityRepository cityRepository) {
         this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
+        this.cityRepository = cityRepository;
     }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(Arrays.asList("*"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        corsConfiguration.setAllowedHeaders(Arrays.asList("*"));
+        corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
         corsConfiguration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
@@ -64,6 +77,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
+
+        final var city = cityRepository
+                .findByName("Lleida")
+                .orElseThrow(Exception::new);
+
+        if (!userRepository.existsByUsername("guillem")) {
+
+            final var user = User.builder()
+                    .username("guillem")
+                    .name("Guillem")
+                    .surname("Orellana Trullols")
+                    .email("guillem@mail.com")
+                    .city(city)
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+            userRepository.save(user);
+        }
+
+        if (companyRepository.findByUsername("ALSA").isEmpty()) {
+            final var company = Company.companyBuilder()
+                    .name("ALSA")
+                    .email("ALSA@mail.com")
+                    .city(city)
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+            companyRepository.save(company);
+        }
     }
 
     @Override

@@ -16,6 +16,7 @@ public class Company extends User {
     @Builder(builderMethodName = "companyBuilder")
     public Company(String name, String password, String email, City city) {
         super();
+        this.username = name;
         this.name = name;
         this.surname = name;
         this.password = password;
