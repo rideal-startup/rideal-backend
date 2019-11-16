@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.validation.constraints.NotBlank;
@@ -39,15 +41,20 @@ public class Line implements Serializable {
     @NotNull
     private Boolean onFreeDays;
 
-    @DBRef
     @NotNull
+    @DBRef
     private City city;
 
-    @NotNull
-    public LineType routeType;
+    @DBRef
+    private Company company;
+
+    @Enumerated(EnumType.STRING)
+    private TransportationMode transportationMode = TransportationMode.BUS;
+
+    @Enumerated(EnumType.STRING)
+    public LineType routeType = LineType.CIRCULAR;
 
     private List<Stop> stops = Collections.emptyList();
-
 
     public static enum LineType {
         UNIDIRECTIONAL,

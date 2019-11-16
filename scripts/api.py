@@ -10,7 +10,7 @@ class API(object):
     self.user = user
     self.password = password
 
-  def _validate_response(self, res):
+  def _validate_response(self, res: requests.Response):
     assert res.status_code < 300, res.json()
 
   def delete_collection(self, collection: str):
@@ -18,7 +18,10 @@ class API(object):
     res = requests.get(self.base_url + collection)
     self._validate_response(res)
     instances = res.json()
-    instances = [r['id'] for r in instances['_embedded'][collection]]
+    if isinstance(instances, dict):
+      instances = instances['_embedded'][collection]
+
+    instances = [r['id'] for r in instances]
   
     for i in instances:
       url = f'{self.base_url}{collection}/{i}'
@@ -29,12 +32,13 @@ class API(object):
     res = requests.post(self.base_url + collection, json=body)
     self._validate_response(res)
   
-  def findBy(field: str, 
+  def findBy(self,
+             field: str, 
              query: str,
-             collection:str):
+             collection: str):
     u_field = field[0].upper() + field[1:]
-    url = f'{self.base_url}{collection}'
-          f'/search/findBy{u_field}/?{field}={query}'
+    url = (f'{self.base_url}{collection}'
+           f'/search/findBy{u_field}/?{field}={query}')
     res = requests.get(url)
     self._validate_response(res)
     return res.json()

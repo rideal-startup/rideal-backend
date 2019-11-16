@@ -1,5 +1,6 @@
 package com.rideal.api.ridealBackend.repositories;
 
+import com.rideal.api.ridealBackend.models.Company;
 import com.rideal.api.ridealBackend.models.Line;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -12,13 +13,16 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 @RepositoryRestResource(collectionResourceRel = "lines", path = "lines")
 public interface LineRepository extends CrudRepository<Line, String> {
-    List<Line> findAll();
+
     Optional<Line> findById(String id);
-    Optional<List<Line>> findByName(String name);
-    Optional<List<Line>> findByCity(String city);
-    Optional<List<Line>> findByAvailable();
+    List<Line> findByName(String name);
+    List<Line> findByCity(String city);
+    List<Line> findByAvailable();
+    List<Line> findByCompany(Company company);
+
     @Query("SELECT l FROM Line WHERE l.available = true and l.onFreeDays = true")
     Optional<List<Line>> findByOnFreeDay();
     @Query("SELECT * FROM Line WHERE l.available = true")
     Optional<List<Line>> findByNotOnFreeDay();
+
 }

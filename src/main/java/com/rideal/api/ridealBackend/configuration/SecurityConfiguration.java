@@ -1,5 +1,6 @@
 package com.rideal.api.ridealBackend.configuration;
 
+import com.rideal.api.ridealBackend.models.City;
 import com.rideal.api.ridealBackend.models.Company;
 import com.rideal.api.ridealBackend.models.User;
 import com.rideal.api.ridealBackend.repositories.CityRepository;
@@ -80,7 +81,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         final var city = cityRepository
                 .findByName("Lleida")
-                .orElseThrow(Exception::new);
+                .orElseGet(() -> cityRepository.save(City.builder()
+                        .country("Spain")
+                        .name("Lleida")
+                        .postalCode(12345)
+                        .build()));
 
         if (!userRepository.existsByUsername("guillem")) {
 
@@ -99,6 +104,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             final var company = Company.companyBuilder()
                     .name("ALSA")
                     .email("ALSA@mail.com")
+                    .city(city)
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+            companyRepository.save(company);
+        }
+
+        if (companyRepository.findByUsername("Moventis").isEmpty()) {
+            final var company = Company.companyBuilder()
+                    .name("Moventis")
+                    .email("Moventis@mail.com")
                     .city(city)
                     .password(passwordEncoder().encode("password"))
                     .build();

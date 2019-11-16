@@ -7,11 +7,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 
 import javax.persistence.Transient;
+import java.io.Serializable;
 import java.util.Collection;
 
 @NoArgsConstructor
 @Document(collection = "companies")
-public class Company extends User {
+public class Company extends User implements Serializable {
 
     @Builder(builderMethodName = "companyBuilder")
     public Company(String name, String password, String email, City city) {
