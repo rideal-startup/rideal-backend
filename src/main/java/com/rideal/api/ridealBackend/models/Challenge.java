@@ -39,9 +39,12 @@ public class Challenge implements Serializable {
     private ChallengeUnit unit;
 
     @NotNull
-    private Long duration;
+    @Enumerated(EnumType.STRING)
+    private ChallengeDifficulty difficulty;
 
     @NotNull
+    private Long duration;
+
     @DBRef(lazy = true)
     private City city;
 
@@ -57,5 +60,11 @@ public class Challenge implements Serializable {
         KM,
         MIN,
         TIMES
+    }
+
+    public static enum ChallengeDifficulty {
+        GOLD,
+        SILVER,
+        BRONZE
     }
 }
