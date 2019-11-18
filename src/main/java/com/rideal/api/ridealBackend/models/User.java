@@ -18,6 +18,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,6 +48,9 @@ public class User implements UserDetails, Serializable {
 
     @NotNull
     private Integer points;
+
+    @DBRef
+    private List<User> friends = Collections.emptyList();
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank @Length(min=8, max=256)
