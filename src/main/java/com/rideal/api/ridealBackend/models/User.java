@@ -1,9 +1,14 @@
 package com.rideal.api.ridealBackend.models;
 
-import com.fasterxml.jackson.annotation.*;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +17,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,91 +29,78 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(collection = "rideal-users")
-@Data
+@MappedSuperclass
 public class User implements UserDetails, Serializable {
+
     public static PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    protected String id;
 
     @NotBlank
-    private String name;
+    @Indexed(unique = true)
+    protected String username;
 
     @NotBlank
-    private String surname;
+    protected String name;
+
+    @NotBlank
+    protected String surname;
 
     @NotNull
     @DBRef
-    private City city;
+    protected City city;
 
     @NotBlank
     @Email
-    private String email;
+    protected String email;
 
-    @NotNull
-    private Integer points;
+    @Builder.Default
+    protected Integer points = 0;
 
+    @Builder.Default
     @DBRef
     private List<User> friends = Collections.emptyList();
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotBlank @Length(min=8, max=256)
-    private String password;
+    @NotBlank
+    @Length(min = 8, max = 256)
+    protected String password;
 
-    public String getId() {
-        return id;
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public String getUsername() {
-        return name + "#" + id.substring(0, 4);
+    @JsonIgnore
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    /**
-     * Checks if Account has not expired.
-     * @return true.
-     */
+    @JsonIgnore
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-    /**
-     * Checks if Account is not locked.
-     * @return true.
-     */
+    @JsonIgnore
     @Override
-    public boolean isAccountNonLocked() { return true; }
-
-    /**
-     * Checks if credentials are not expired.
-     * @return true.
-     */
-    @Override
-    public boolean isCredentialsNonExpired() { return true; }
-
-    /**
-     * Checks if Account is enabled.
-     * @return true.
-     */
-    @Override
-
-    public boolean isEnabled() { return true; }
-
+    public boolean isEnabled() {
+        return true;
+    }
 
     @Override
+    @JsonIgnore
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void encodePassword() {
-        this.password = passwordEncoder.encode(this.password);
     }
 }

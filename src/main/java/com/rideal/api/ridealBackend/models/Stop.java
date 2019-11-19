@@ -18,12 +18,15 @@ import java.io.Serializable;
 public class Stop implements Serializable {
     @NotBlank
     private String name;
+
     @NotNull
     @Embedded
     @Valid
     private Coordinates location;
+
     @NotNull
     private Long waitTime;
+
     @NotNull
     private Integer order;
 }

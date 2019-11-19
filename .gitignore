@@ -44,3 +44,7 @@ buildNumber.properties
 __pychache__/
 venv/
 *.pyc
+
+data/
+
+run-server.sh
