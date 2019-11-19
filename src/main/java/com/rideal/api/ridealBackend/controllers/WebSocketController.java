@@ -35,7 +35,7 @@ public class WebSocketController {
     public void onReceivedMessage(SimpMessageHeaderAccessor accessor, String message) {
         Object nativeHeaders = accessor.getMessageHeaders().get("nativeHeaders");
         System.out.println(nativeHeaders);
-        String[] fields = (nativeHeaders != null) ? nativeHeaders.toString().split("(?! )([, {}*]+)") : new String[] {}; // Regexp: Match spaces only if preceded by comma
+        String[] fields = (nativeHeaders != null) ? nativeHeaders.toString().split("(?! )([, {}*]+)") : new String[]{}; // Regexp: Match spaces only if preceded by comma
         Map<String, String> rcvHeaders;
         rcvHeaders = this.parseHeaders(fields);
 
@@ -43,7 +43,7 @@ public class WebSocketController {
         Map<String, Object> sndHeaders = buildSendHeaders(rcvHeaders);
 
         logger.info("Message to room: " + rcvHeaders.get("room_id") + " into file: " + rcvHeaders.get("file_id"));
-        this.template.convertAndSend( format("/chat/%s", rcvHeaders.get("room_id")), message, sndHeaders);
+        this.template.convertAndSend(format("/chat/%s", rcvHeaders.get("room_id")), message, sndHeaders);
     }
 
     private Map<String, Object> buildSendHeaders(Map<String, String> rcvHeaders) {
@@ -59,7 +59,7 @@ public class WebSocketController {
     public void onReceivedRequest(SimpMessageHeaderAccessor accessor, String body) {
         System.out.println("Message received!" + body);
         Object nativeHeaders = accessor.getMessageHeaders().get("nativeHeaders");
-        String[] fields = (nativeHeaders != null) ? nativeHeaders.toString().split("(?! )([, {}*]+)") : new String[] {};
+        String[] fields = (nativeHeaders != null) ? nativeHeaders.toString().split("(?! )([, {}*]+)") : new String[]{};
         Map<String, String> rcvHeaders;
     }
 
@@ -67,7 +67,7 @@ public class WebSocketController {
     public void onReceivedChatMessage(SimpMessageHeaderAccessor accessor, String message) {
         System.out.println("Chat Message received!" + message);
         Object nativeHeaders = accessor.getMessageHeaders().get("nativeHeaders");
-        String[] fields = (nativeHeaders != null) ? nativeHeaders.toString().split("(?! )([, {}*]+)") : new String[] {};
+        String[] fields = (nativeHeaders != null) ? nativeHeaders.toString().split("(?! )([, {}*]+)") : new String[]{};
         Map<String, String> rcvHeaders;
 
         rcvHeaders = this.parseHeaders(fields);
