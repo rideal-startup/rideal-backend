@@ -34,11 +34,6 @@ public class LocationStreaming {
                 new SimpleStringSchema());
     }
 
-    private Message average(Message m1, Message m2) {
-        return new Message(m1.getBus(),
-                (m1.getValue() + m2.getValue()) / 2,
-                0L);
-    }
 
     @PostConstruct
     public void init() {
@@ -60,7 +55,9 @@ public class LocationStreaming {
                 .assignTimestampsAndWatermarks(new TimestampAssigner())
                 .keyBy(Message::getBus)
                 .timeWindow(Time.seconds(10), Time.seconds(5))
-                .reduce(this::average);
+                .reduce((m1, m2) -> new Message(m1.getBus(),
+                        (m1.getValue() + m2.getValue()) / 2,
+                        0L));
 
         stream.print();
 

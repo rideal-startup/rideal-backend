@@ -6,13 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Message {
     private String bus;
     private Double value;
     private Long timestamp;
+
 
     public static Message fromJson(String s) throws JsonProcessingException {
         return new ObjectMapper().readValue(s, Message.class);
