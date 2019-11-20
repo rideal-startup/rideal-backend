@@ -18,3 +18,9 @@ rideal:
   passwords:
     db_manager: ${DB_MANAGER_PASSWORD}
     developer: ${DEVELOPER_PASSWORD}
+
+rabbit-mq:
+  host: ${RABBITMQ_HOST}
+  port: ${RABBITMQ_PORT}
+  user: ${RABBITMQ_USER}
+  password: ${RABBITMQ_PASS}
