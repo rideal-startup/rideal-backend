@@ -23,4 +23,6 @@ public class UsageLogs {
     protected Line line;
 
     protected Long useTime;
+
+//    protected Long date;
 }
