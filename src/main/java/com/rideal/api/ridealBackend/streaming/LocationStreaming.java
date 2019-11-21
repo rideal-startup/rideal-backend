@@ -1,15 +1,22 @@
 package com.rideal.api.ridealBackend.streaming;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.rideal.api.ridealBackend.controllers.WebSocketController;
+import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.TimeCharacteristic;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.sink.SinkFunction;
 import org.apache.flink.streaming.api.windowing.time.Time;
 import org.apache.flink.streaming.connectors.rabbitmq.RMQSource;
 import org.apache.flink.streaming.connectors.rabbitmq.common.RMQConnectionConfig;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.persistence.PostLoad;
 
 @Service
 public class LocationStreaming {
@@ -34,12 +41,10 @@ public class LocationStreaming {
                 new SimpleStringSchema());
     }
 
-
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void init() {
         final var env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
-
 
         final var connectionConfig = new RMQConnectionConfig.Builder()
                 .setHost(host)
@@ -53,13 +58,10 @@ public class LocationStreaming {
                 .addSource(rmqSource(connectionConfig))
                 .map(Message::fromJson)
                 .assignTimestampsAndWatermarks(new TimestampAssigner())
-                .keyBy(Message::getBus)
-                .timeWindow(Time.seconds(10), Time.seconds(5))
-                .reduce((m1, m2) -> new Message(m1.getBus(),
-                        (m1.getValue() + m2.getValue()) / 2,
-                        0L));
-
-        stream.print();
+                .keyBy(Message::getLineId)
+                .timeWindow(Time.seconds(10), Time.seconds(1))
+                .reduce(Message::mean)
+                .addSink(new WebSocketSink());
 
         try {
             env.execute();
