@@ -24,4 +24,6 @@ public class Progress {
 
     @DBRef
     Challenge challenge;
+
+    Long points;
 }
