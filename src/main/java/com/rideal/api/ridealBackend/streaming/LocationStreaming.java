@@ -38,7 +38,8 @@ public class LocationStreaming {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
         final var env = StreamExecutionEnvironment.getExecutionEnvironment();
-        env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime);
+        env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
+        env.enableCheckpointing(5000);
 
         final var connectionConfig = new RMQConnectionConfig.Builder()
                 .setHost(host)
@@ -51,11 +52,11 @@ public class LocationStreaming {
         final var stream = env
                 .addSource(rmqSource(connectionConfig))
                 .map(Message::fromJson)
-                .assignTimestampsAndWatermarks(new TimestampAssigner())
                 .keyBy(Message::getLineId)
-                .timeWindow(Time.seconds(10), Time.seconds(1))
+                .timeWindow(Time.seconds(5))
                 .reduce(Message::mean)
-                .addSink(new WebSocketSink());
+                .addSink(new WebSocketSink())
+                .setParallelism(1);
 
         try {
             env.execute();

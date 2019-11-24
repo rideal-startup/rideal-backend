@@ -35,7 +35,7 @@ public class WebSocketSink extends RichSinkFunction<Message> {
     }
 
     @Override
-    public void invoke(Message value, Context context)  {
-        session.send("/app/chat", value);
+    public void invoke(Message value, Context context) {
+        session.send("/chat", value);
     }
 }

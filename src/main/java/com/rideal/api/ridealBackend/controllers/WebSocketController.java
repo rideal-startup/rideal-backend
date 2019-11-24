@@ -1,13 +1,11 @@
 package com.rideal.api.ridealBackend.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.rideal.api.ridealBackend.repositories.UserRepository;
-import com.rideal.api.ridealBackend.streaming.Message;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.messaging.SessionConnectedEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,26 +17,18 @@ public class WebSocketController {
 
     private final SimpMessagingTemplate template;
 
-    @Autowired
-    private UserRepository userRepository;
-
     WebSocketController(SimpMessagingTemplate template) {
         this.template = template;
     }
 
-
-    private Map<String, Object> buildSendHeaders(Map<String, String> rcvHeaders) {
-        Map<String, Object> sndHeaders = new HashMap<>();
-        sndHeaders.put("UserID", rcvHeaders.get("UserID"));
-        sndHeaders.put("room_id", rcvHeaders.get("room_id"));
-        sndHeaders.put("file_id", rcvHeaders.get("file_id"));
-        sndHeaders.put("action", rcvHeaders.get("action"));
-        return sndHeaders;
+    @EventListener
+    public void handleWebSocketConnectListener(SessionConnectedEvent event) {
+        System.out.println("New user connected");
     }
 
-    @MessageMapping("/chat")
-    public void onReceivedRequest(SimpMessageHeaderAccessor accessor, Message body) throws JsonProcessingException {
-        System.out.println(body.toJson());
+    @EventListener
+    public void handleWebSocketDisconnectListener(SessionConnectedEvent event) {
+        System.out.println("User disconnected");
     }
 
     @MessageMapping("/send/chat")
