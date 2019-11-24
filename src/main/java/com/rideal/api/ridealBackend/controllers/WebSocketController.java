@@ -37,7 +37,8 @@ public class WebSocketController {
     }
 
     @MessageMapping("/chat")
-    public void onReceivedRequest(SimpMessageHeaderAccessor accessor, Message body) {
+    public void onReceivedRequest(SimpMessageHeaderAccessor accessor, Message body) throws JsonProcessingException {
+        System.out.println(body.toJson());
     }
 
     @MessageMapping("/send/chat")

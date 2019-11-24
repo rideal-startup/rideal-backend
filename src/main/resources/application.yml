@@ -24,3 +24,4 @@ rabbit-mq:
   port: ${RABBITMQ_PORT}
   user: ${RABBITMQ_USER}
   password: ${RABBITMQ_PASS}
+  vhost: ${RABBITMQ_VHOST}
