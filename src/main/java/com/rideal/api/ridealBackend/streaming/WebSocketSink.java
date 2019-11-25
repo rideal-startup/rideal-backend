@@ -31,7 +31,12 @@ public class WebSocketSink extends RichSinkFunction<Message> {
         final var transport = new SockJsClient(transports);
         final var stompClient = new WebSocketStompClient(transport);
         stompClient.setMessageConverter(new MappingJackson2MessageConverter());
-        session = stompClient.connect("ws://localhost:8080/socket/", new MyHandler()).get();
+
+        var socketPort = System.getenv("PORT");
+        if (socketPort == null || socketPort.isBlank())
+            socketPort = "8080";
+
+        session = stompClient.connect("ws://localhost:" + socketPort + "/socket/", new MyHandler()).get();
     }
 
     @Override
