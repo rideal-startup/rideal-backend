@@ -9,6 +9,5 @@ public class RidealBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RidealBackendApplication.class, args);
 	}
-
 }
 

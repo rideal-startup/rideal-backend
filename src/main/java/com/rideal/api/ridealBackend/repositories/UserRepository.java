@@ -2,14 +2,20 @@ package com.rideal.api.ridealBackend.repositories;
 
 import com.rideal.api.ridealBackend.models.User;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RepositoryRestResource(collectionResourceRel = "users", path = "users")
-public interface UserRepository extends CrudRepository<User, String> {
-    Optional<User> findById(@RequestParam("id") String id);
+public interface UserRepository extends PagingAndSortingRepository<User, String> {
+    Optional<User> findById(String id);
+    Optional<User> findByUsername(String username);
+    Boolean existsByUsername(String username);
+    Boolean existsByEmail(String email);
+    Optional<User> findByEmail(String email);
+    Optional<List<User>> findAllByOrderByPointsDesc();
 }

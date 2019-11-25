@@ -4,3 +4,24 @@ spring:
       uri: mongodb://${USERNAME}:${PASSWORD}@ds149596.mlab.com:49596/rideal?retryWrites=false
     rest:
       base-path: /api
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+  security:
+    user:
+      name: user
+      password: ${SEC_PASSWORD}
+      role: admin
+
+rideal:
+  passwords:
+    db_manager: ${DB_MANAGER_PASSWORD}
+    developer: ${DEVELOPER_PASSWORD}
+
+rabbit-mq:
+  host: ${RABBITMQ_HOST}
+  port: ${RABBITMQ_PORT}
+  user: ${RABBITMQ_USER}
+  password: ${RABBITMQ_PASS}
+  vhost: ${RABBITMQ_VHOST}
