@@ -53,7 +53,7 @@ public class LocationStreaming {
                 .addSource(rmqSource(connectionConfig))
                 .map(Message::fromJson)
                 .keyBy(Message::getLineId)
-                .timeWindow(Time.seconds(5))
+                .timeWindow(Time.seconds(3))
                 .reduce(Message::mean)
                 .addSink(new WebSocketSink())
                 .setParallelism(1);
