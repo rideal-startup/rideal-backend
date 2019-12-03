@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -58,5 +59,12 @@ public class LinesController {
                 toList(toList(linesRepository.findAll()));
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/lines/containStop")
+    @ResponseBody
+    List<Line> linesContainingStop(@RequestParam String stopName) {
+        final var lines = this.linesRepository.findAll();
+        return lines;
     }
 }
