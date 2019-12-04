@@ -2,6 +2,7 @@ package com.rideal.api.ridealBackend.controllers;
 
 import com.rideal.api.ridealBackend.models.Company;
 import com.rideal.api.ridealBackend.models.Line;
+import com.rideal.api.ridealBackend.models.Stop;
 import com.rideal.api.ridealBackend.models.User;
 import com.rideal.api.ridealBackend.repositories.LineRepository;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
@@ -65,6 +66,12 @@ public class LinesController {
     @ResponseBody
     List<Line> linesContainingStop(@RequestParam String stopName) {
         final var lines = this.linesRepository.findAll();
-        return lines;
+        return lines
+                .stream()
+                .filter(l -> {
+                    final var stopNames = l.getStops().stream().map(Stop::getName);
+                    return stopNames.collect(Collectors.toList()).contains(stopName);
+                })
+                .collect(Collectors.toList());
     }
 }
