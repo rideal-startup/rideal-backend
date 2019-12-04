@@ -71,6 +71,19 @@ public class LinesController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/lines/containStop")
+    @ResponseBody
+    List<Line> linesContainingStop(@RequestParam String stopName) {
+        final var lines = this.linesRepository.findAll();
+        return lines
+                .stream()
+                .filter(l -> {
+                    final var stopNames = l.getStops().stream().map(Stop::getName);
+                    return stopNames.collect(Collectors.toList()).contains(stopName);
+                })
+                .collect(Collectors.toList());
+    }
+
     @GetMapping("/stops/findStopsByNameLike")
     @ResponseBody
     public ResponseEntity<List<Stop>> findStopsByNameLike(@RequestParam String name) {

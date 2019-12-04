@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Embedded;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -30,4 +32,9 @@ public class City implements Serializable {
 
     @NotNull
     private String country;
+
+    @NotNull
+    @Embedded
+    @Valid
+    private Coordinates location;
 }
