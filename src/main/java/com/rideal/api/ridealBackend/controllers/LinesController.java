@@ -2,21 +2,32 @@ package com.rideal.api.ridealBackend.controllers;
 
 import com.rideal.api.ridealBackend.models.Company;
 import com.rideal.api.ridealBackend.models.Line;
+import com.rideal.api.ridealBackend.models.Stop;
 import com.rideal.api.ridealBackend.models.User;
 import com.rideal.api.ridealBackend.repositories.LineRepository;
+import com.rideal.api.ridealBackend.services.LineService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @BasePathAwareController
 public class LinesController {
+
+    @Autowired
+    private LineService lineService;
 
     private final LineRepository linesRepository;
 
@@ -58,5 +69,21 @@ public class LinesController {
                 toList(toList(linesRepository.findAll()));
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/stops/findStopsByNameLike")
+    @ResponseBody
+    public ResponseEntity<List<Stop>> findStopsByNameLike(@RequestParam String name) {
+        List<Line> lines = linesRepository.findAll();
+        List<Stop> stops = new ArrayList<>();
+
+        for (Line line : lines) {
+            for (Stop stop : line.getStops()) {
+                if (!this.lineService.isDuplicated(stop, stops) && this.lineService.isNameLike(name, stop.getName())) {
+                    stops.add(stop);
+                }
+            }
+        }
+        return new ResponseEntity<>(stops, new HttpHeaders(), HttpStatus.OK);
     }
 }
