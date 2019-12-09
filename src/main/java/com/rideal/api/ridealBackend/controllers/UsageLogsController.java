@@ -32,14 +32,10 @@ public class UsageLogsController {
     public HttpStatus addLogs(JsonObject usageLogs) {
         String userRef;
         String lineRef;
-        Long useTime = null;
-        Long date = null;
 
         try {
             userRef = usageLogs.get("user").toString();
             lineRef = usageLogs.get("line").toString();
-            useTime = usageLogs.get("useTime").getAsLong();
-            date = usageLogs.get("date").getAsLong();
         } catch (Exception ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing fields in POST request JSON body (user," +
                     " line, useTime, date)");
@@ -63,20 +59,21 @@ public class UsageLogsController {
 
     }
 
-    @GetMapping("/findLogsByDay")
+    @GetMapping("/findByDayFromLineById")
     @ResponseBody
-    public ResponseEntity<Map<Integer, Long>> getLogsByDay(@RequestParam Long day) {
-        Optional<Map<Integer, Long>> usageLogs = usageLogsService.getLogsByDay(day);
+    public ResponseEntity<Map<Long, Long>> getLogsByDay(@RequestParam Long day) {
+        Optional<Map<Long, Long>> usageLogs = usageLogsService.getLogsByDay(day);
         if (usageLogs.isEmpty()) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(usageLogs.get(), new HttpHeaders(), HttpStatus.OK);
     }
 
-    @GetMapping("/findLogsByDayFromUserWithUsername?username={username}&day={day}}")
+    @GetMapping("/findByDayFromUserByUsernameFromLineById")
     @ResponseBody
-    public ResponseEntity<Map<Integer, Long>> getLogsByDayFromUser(@RequestParam String username, @RequestParam Long day) {
-        Optional<Map<Integer, Long>> usageLogsList = usageLogsService.getLogsByDayFromUser(day, username);
+    public ResponseEntity<Map<Long, Long>> getLogsByDayFromUser(@RequestParam Long day, @RequestParam String username,
+                                                                @RequestParam String line) {
+        Optional<Map<Long, Long>> usageLogsList = usageLogsService.getLogsByDayFromUserInLine(day, username, line);
 
         if (usageLogsList.isEmpty()) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
@@ -85,14 +82,15 @@ public class UsageLogsController {
         }
     }
 
-    @GetMapping("/insertByUserWithTimeInLine")
+    @PostMapping("/insertByUserWithTimeInLine")
     @ResponseBody
-    public ResponseEntity<UsageLogs> insertUserUsageLogs(@RequestParam String username, @RequestParam Long time, @RequestParam String lineId) {
+    public ResponseEntity<UsageLogs> insertUserUsageLogs(@RequestParam String username, @RequestParam Long time,
+                                                         @RequestParam String lineId) {
         Optional<UsageLogs> usageLog = usageLogsService.insertUsageLog(username, time, lineId);
         if (usageLog.isEmpty()) {
             return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+            return new ResponseEntity<>(usageLog.get(), new HttpHeaders(), HttpStatus.OK);
         }
     }
 }
