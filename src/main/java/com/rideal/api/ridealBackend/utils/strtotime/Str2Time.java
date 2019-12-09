@@ -17,11 +17,12 @@ import java.util.List;
  * Date bla2 = Str2Time.convert("-3 days");
  */
 public final class Str2Time {
-	
+
+    public static long DAY_LEN_MS = 86400000;
     private static final List<Matcher> matchers;
 
     static {
-        matchers = new LinkedList<Matcher>();
+        matchers = new LinkedList<>();
         matchers.add(new NowMatcher());
         matchers.add(new TomorrowMatcher());
         matchers.add(new YesterdayMatcher());
@@ -49,19 +50,26 @@ public final class Str2Time {
     	return convert(input, "");
     }
 
-    private static Date forceMidnight(Date date) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        cal.set(Calendar.HOUR, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
-        Long one = date.getTime();
-        Long two = cal.getTime().getTime();
+    public static Date forceMidnight(Date date) {
+        Calendar cal = Calendar.getInstance();       // get calendar instance
+        cal.setTime(date);                           // set cal to date
+        cal.set(Calendar.HOUR_OF_DAY, 0);            // set hour to midnight
+        cal.set(Calendar.MINUTE, 0);                 // set minute in hour
+        cal.set(Calendar.SECOND, 0);                 // set second in minute
+        cal.set(Calendar.MILLISECOND, 0);            // set millis in second
         return cal.getTime();
     }
 
-    public static Date convert(String input, String refDateStr) {
+    public static Date forceResetHour(Date date) {
+        Calendar cal = Calendar.getInstance();       // get calendar instance
+        cal.setTime(date);                           // set cal to date
+        cal.set(Calendar.MINUTE, 0);                 // set minute in hour
+        cal.set(Calendar.SECOND, 0);                 // set second in minute
+        cal.set(Calendar.MILLISECOND, 0);            // set millis in second
+        return cal.getTime();
+    }
+
+    private static Date convert(String input, String refDateStr) {
         for (Matcher matcher : matchers) {
             Date date = matcher.tryConvert(input, refDateStr);
 

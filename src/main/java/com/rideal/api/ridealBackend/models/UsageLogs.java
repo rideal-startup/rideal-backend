@@ -34,7 +34,7 @@ public class UsageLogs {
     protected Line line;
 
     @NotNull
-    protected Map<Integer, Long> useTime;
+    protected Map<Long, Long> useTime;
 
     @NotNull
     protected Long date;

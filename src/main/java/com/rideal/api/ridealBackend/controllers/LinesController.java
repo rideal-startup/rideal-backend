@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -81,6 +82,7 @@ public class LinesController {
                     final var stopNames = l.getStops().stream().map(Stop::getName);
                     return stopNames.collect(Collectors.toList()).contains(stopName);
                 })
+                .sorted(Comparator.comparing(Line::getName))
                 .collect(Collectors.toList());
     }
 
