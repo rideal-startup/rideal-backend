@@ -119,6 +119,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .build();
             companyRepository.save(company);
         }
+
+        if (userRepository.findByUsername("testuser").isEmpty()) {
+            final var user = User.builder()
+                    .name("test")
+                    .surname("test")
+                    .username("testuser")
+                    .email("test@mail.com")
+                    .city(city)
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+            userRepository.save(user);
+        }
     }
 
     @Override

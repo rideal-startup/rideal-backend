@@ -1,7 +1,6 @@
 package com.rideal.api.ridealBackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -68,7 +67,7 @@ public class User implements UserDetails, Serializable {
     @DBRef
     private List<User> friends = Collections.emptyList();
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank
     @Length(min = 8, max = 256)
     protected String password;
@@ -102,5 +101,9 @@ public class User implements UserDetails, Serializable {
     @Transient
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER");
+    }
+
+    public void encodePassword() {
+        this.password = User.passwordEncoder.encode(this.password);
     }
 }
