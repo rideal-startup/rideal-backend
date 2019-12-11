@@ -38,4 +38,8 @@ public class UserService {
     public Optional<User> findUserById(String userId) {
         return userRepository.findById(userId);
     }
+
+    public User persistUserChanges(User user) {
+        return userRepository.save(user);
+    }
 }
