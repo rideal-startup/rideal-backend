@@ -9,6 +9,7 @@ import org.springframework.data.rest.webmvc.BasePathAwareController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.json.JsonPatch;
@@ -54,5 +55,21 @@ public class UsersController {
         User resultUser = userService.persistUserChanges(userPatched);
 
         return new ResponseEntity<>(resultUser, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PutMapping("/addFriend")
+    public ResponseEntity<User> addFriends(@RequestParam String id) {
+        User myself = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> result = userService.appendFriends(myself, id);
+        if (result.isEmpty()) return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(result.get(), new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PutMapping("/deleteFriend")
+    public ResponseEntity<User> deleteFriends(@RequestParam String id) {
+        User myself = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> result = userService.deleteFriend(myself, id);
+        if (result.isEmpty()) return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(result.get(), new HttpHeaders(), HttpStatus.OK);
     }
 }
