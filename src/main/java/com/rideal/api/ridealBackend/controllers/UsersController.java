@@ -1,6 +1,7 @@
 package com.rideal.api.ridealBackend.controllers;
 
 import com.rideal.api.ridealBackend.models.User;
+import com.rideal.api.ridealBackend.services.PatchService;
 import com.rideal.api.ridealBackend.services.PhotoService;
 import com.rideal.api.ridealBackend.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +10,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.json.JsonPatch;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +26,9 @@ public class UsersController {
 
     @Autowired
     private PhotoService photoService;
+
+    @Autowired
+    private PatchService patchService;
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers(
@@ -61,5 +63,36 @@ public class UsersController {
         } else {
             return ResponseEntity.ok().body(userService.getPendingApprovals(userOptional.get()));
         }
+    }
+
+    @PatchMapping(path = "/{id}", consumes = "application/json-patch+json")
+    public ResponseEntity<User> pathUserData(@PathVariable String id, @RequestBody JsonPatch patchDocument) {
+        Optional<User> optionalUser = userService.findUserById(id);
+
+        if (optionalUser.isEmpty()) {
+            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+        }
+
+        User userPatched = patchService.patch(patchDocument, optionalUser.get(), User.class);
+
+        User resultUser = userService.persistUserChanges(userPatched);
+
+        return new ResponseEntity<>(resultUser, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PutMapping("/addFriend")
+    public ResponseEntity<User> addFriends(@RequestParam String id) {
+        User myself = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> result = userService.appendFriends(myself, id);
+        if (result.isEmpty()) return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(result.get(), new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PutMapping("/deleteFriend")
+    public ResponseEntity<User> deleteFriends(@RequestParam String id) {
+        User myself = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> result = userService.deleteFriend(myself, id);
+        if (result.isEmpty()) return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
+        return new ResponseEntity<>(result.get(), new HttpHeaders(), HttpStatus.OK);
     }
 }
