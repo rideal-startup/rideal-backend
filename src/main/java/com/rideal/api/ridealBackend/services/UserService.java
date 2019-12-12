@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -37,5 +38,13 @@ public class UserService {
 
     public Optional<User> findUserById(String userId) {
         return userRepository.findById(userId);
+    }
+
+    public List<User> getPendingApprovals(User me) {
+        final var users = userRepository.findAll();
+
+        return users.stream()
+                .filter(u -> u.getRequests().contains(me))
+                .collect(Collectors.toList());
     }
 }

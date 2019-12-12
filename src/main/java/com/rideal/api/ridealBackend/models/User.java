@@ -67,6 +67,10 @@ public class User implements UserDetails, Serializable {
     @DBRef
     private List<User> friends = Collections.emptyList();
 
+    @Builder.Default
+    @DBRef
+    private List<User> requests = Collections.emptyList();
+
     //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank
     @Length(min = 8, max = 256)
