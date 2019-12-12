@@ -15,8 +15,21 @@
 	<description>Rideal API to provide data for Rideal subprojects.</description>
 
 	<properties>
+		<firestore.project.id/>
 		<java.version>11</java.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>libraries-bom</artifactId>
+				<version>3.0.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -144,6 +157,18 @@
 			<artifactId>javax.json-api</artifactId>
 			<version>1.1.4</version>
 		</dependency>
+
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-firestore</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-admin</artifactId>
+			<version>6.9.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
