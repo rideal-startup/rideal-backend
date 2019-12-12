@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -37,5 +38,29 @@ public class UserService {
 
     public Optional<User> findUserById(String userId) {
         return userRepository.findById(userId);
+    }
+
+    public User persistUserChanges(User user) {
+        return userRepository.save(user);
+    }
+
+    public Optional<User> appendFriends(User myself, String friendId) {
+        Optional<User> optionalUser = userRepository.findById(friendId);
+        if (optionalUser.isEmpty()) return Optional.empty();
+        List<User> myFriends = myself.getFriends();
+        myFriends.add(optionalUser.get());
+        myself.setFriends(myFriends);
+        userRepository.save(myself);
+        return Optional.of(myself);
+    }
+
+    public Optional<User> deleteFriend(User myself, String friendId) {
+        Optional<User> optionalUser = userRepository.findById(friendId);
+        if (optionalUser.isEmpty()) return Optional.empty();
+        List<User> myFriends = myself.getFriends().stream().filter(user ->
+                !user.getId().equals(friendId)).collect(Collectors.toList());
+        myself.setFriends(myFriends);
+        userRepository.save(myself);
+        return Optional.of(myself);
     }
 }
