@@ -54,7 +54,8 @@ public class UserService {
 
     public Optional<User> appendFriends(User myself, String friendId) {
         Optional<User> optionalUser = userRepository.findById(friendId);
-        if (optionalUser.isEmpty()) return Optional.empty();
+        if (optionalUser.isEmpty())
+            return Optional.empty();
         List<User> myFriends = myself.getFriends();
         myFriends.add(optionalUser.get());
         myself.setFriends(myFriends);

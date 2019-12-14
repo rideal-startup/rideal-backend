@@ -87,8 +87,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .postalCode(12345)
                         .build()));
 
-        userRepository.findAll().forEach(userRepository::delete);
-
         if (!userRepository.existsByUsername("guillem")) {
 
             final var user = User.builder()

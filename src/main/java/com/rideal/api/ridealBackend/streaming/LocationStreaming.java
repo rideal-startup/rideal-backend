@@ -39,7 +39,7 @@ public class LocationStreaming {
     public void init() {
         final var env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.setStreamTimeCharacteristic(TimeCharacteristic.ProcessingTime);
-        env.enableCheckpointing(5000);
+        // env.enableCheckpointing(5000);
 
         final var connectionConfig = new RMQConnectionConfig.Builder()
                 .setHost(host)

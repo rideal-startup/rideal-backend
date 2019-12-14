@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AuthController {
     @RequestMapping("/identity")
     public @ResponseBody
-    User getAuthenticatedUserIdentity(
+    UsersController.UserDTO getAuthenticatedUserIdentity(
             PersistentEntityResourceAssembler resourceAssembler) {
-        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return new UsersController.UserDTO(user);
     }
 }
