@@ -87,6 +87,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .postalCode(12345)
                         .build()));
 
+        userRepository.findAll().forEach(userRepository::delete);
+
         if (!userRepository.existsByUsername("guillem")) {
 
             final var user = User.builder()
@@ -94,6 +96,45 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .name("Guillem")
                     .surname("Orellana Trullols")
                     .email("guillem@mail.com")
+                    .city(city)
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+            userRepository.save(user);
+        }
+
+        if (!userRepository.existsByUsername("marcel")) {
+
+            final var user = User.builder()
+                    .username("marcel")
+                    .name("Marcel")
+                    .surname("Ortiz Sanchez")
+                    .email("marcel@mail.com")
+                    .city(city)
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+            userRepository.save(user);
+        }
+
+        if (!userRepository.existsByUsername("jordi")) {
+
+            final var user = User.builder()
+                    .username("jordi")
+                    .name("Jordi")
+                    .surname("Onrubia Palacios")
+                    .email("jordi@mail.com")
+                    .city(city)
+                    .password(passwordEncoder().encode("password"))
+                    .build();
+            userRepository.save(user);
+        }
+
+        if (!userRepository.existsByUsername("atto")) {
+
+            final var user = User.builder()
+                    .username("atto")
+                    .name("Ricard")
+                    .surname("Cervera")
+                    .email("atto@mail.com")
                     .city(city)
                     .password(passwordEncoder().encode("password"))
                     .build();
@@ -118,18 +159,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .password(passwordEncoder().encode("password"))
                     .build();
             companyRepository.save(company);
-        }
-
-        if (userRepository.findByUsername("testuser").isEmpty()) {
-            final var user = User.builder()
-                    .name("test")
-                    .surname("test")
-                    .username("testuser")
-                    .email("test@mail.com")
-                    .city(city)
-                    .password(passwordEncoder().encode("password"))
-                    .build();
-            userRepository.save(user);
         }
     }
 

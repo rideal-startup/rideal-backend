@@ -1,6 +1,7 @@
 package com.rideal.api.ridealBackend.controllers;
 
 import com.rideal.api.ridealBackend.models.User;
+import com.rideal.api.ridealBackend.repositories.UserRepository;
 import com.rideal.api.ridealBackend.services.PatchService;
 import com.rideal.api.ridealBackend.services.PhotoService;
 import com.rideal.api.ridealBackend.services.UserService;
@@ -20,6 +21,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/users")
 public class UsersController {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
@@ -94,5 +98,17 @@ public class UsersController {
         Optional<User> result = userService.deleteFriend(myself, id);
         if (result.isEmpty()) return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.OK);
         return new ResponseEntity<>(result.get(), new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<User> updateUser(@RequestBody User userUpdated) {
+        User myself = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (myself.getId() != userUpdated.getId())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        myself.setUsername(userUpdated.getUsername());
+        myself.setEmail(userUpdated.getEmail());
+        userRepository.save(myself);
+        return ResponseEntity.ok(myself);
     }
 }
