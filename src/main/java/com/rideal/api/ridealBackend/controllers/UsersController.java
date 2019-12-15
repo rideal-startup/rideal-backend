@@ -162,7 +162,10 @@ public class UsersController {
 
         // Add the accepted request as a new friend
         mySelf.getFriends().add(otherUser.get());
+        otherUser.get().getFriends().add(mySelf);
+
         userRepository.save(mySelf);
+        userRepository.save(otherUser.get());
 
         return ResponseEntity.ok(new UserDTO(mySelf));
     }
