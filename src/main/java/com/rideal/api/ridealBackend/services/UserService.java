@@ -44,7 +44,7 @@ public class UserService {
         final var users = userRepository.findAll();
 
         return users.stream()
-                .filter(u -> u.getRequests().contains(me))
+                .filter(u -> u.getRequests().contains(me.getId()))
                 .collect(Collectors.toList());
     }
 
@@ -56,8 +56,8 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findById(friendId);
         if (optionalUser.isEmpty())
             return Optional.empty();
-        List<User> myFriends = myself.getFriends();
-        myFriends.add(optionalUser.get());
+        List<String> myFriends = myself.getFriends();
+        myFriends.add(optionalUser.get().getId());
         myself.setFriends(myFriends);
         userRepository.save(myself);
         return Optional.of(myself);
@@ -66,8 +66,8 @@ public class UserService {
     public Optional<User> deleteFriend(User myself, String friendId) {
         Optional<User> optionalUser = userRepository.findById(friendId);
         if (optionalUser.isEmpty()) return Optional.empty();
-        List<User> myFriends = myself.getFriends().stream().filter(user ->
-                !user.getId().equals(friendId)).collect(Collectors.toList());
+        List<String> myFriends = myself.getFriends().stream().filter(user ->
+                !user.equals(friendId)).collect(Collectors.toList());
         myself.setFriends(myFriends);
         userRepository.save(myself);
         return Optional.of(myself);

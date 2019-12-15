@@ -64,12 +64,11 @@ public class User implements UserDetails, Serializable {
     protected Integer points = 0;
 
     @Builder.Default
-    @DBRef
-    private List<User> friends = Collections.emptyList();
+    private List<String> friends = Collections.emptyList();
 
     @Builder.Default
-    @DBRef
-    private List<User> requests = Collections.emptyList();
+
+    private List<String> requests = Collections.emptyList();
 
     //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank

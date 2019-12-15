@@ -2,7 +2,6 @@ package com.rideal.api.ridealBackend.controllers;
 
 import com.rideal.api.ridealBackend.models.User;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
-import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -11,9 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AuthController {
     @RequestMapping("/identity")
     public @ResponseBody
-    UsersController.UserDTO getAuthenticatedUserIdentity(
-            PersistentEntityResourceAssembler resourceAssembler) {
-        final var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return new UsersController.UserDTO(user);
+    User getAuthenticatedUserIdentity() {
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 }
