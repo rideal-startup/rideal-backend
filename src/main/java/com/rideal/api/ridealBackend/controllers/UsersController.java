@@ -195,4 +195,32 @@ public class UsersController {
                 .collect(toList());
         return ResponseEntity.ok(users);
     }
+
+    @GetMapping("/{id}/friends")
+    public ResponseEntity<List<User>> getFriends(@PathVariable String id) {
+        final var userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        final var friends = userOpt.get()
+                .getFriends()
+                .stream().map(u -> userRepository.findById(u).get())
+                .collect(toList());
+
+        return ResponseEntity.ok(friends);
+    }
+
+    @GetMapping("/{id}/requests")
+    public ResponseEntity<List<User>> getRequests(@PathVariable String id) {
+        final var userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        final var friends = userOpt.get()
+                .getRequests()
+                .stream().map(u -> userRepository.findById(u).get())
+                .collect(toList());
+
+        return ResponseEntity.ok(friends);
+    }
 }

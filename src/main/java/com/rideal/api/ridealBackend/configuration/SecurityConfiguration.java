@@ -88,7 +88,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         .build()));
 
         if (!userRepository.existsByUsername("guillem")) {
-
             final var user = User.builder()
                     .username("guillem")
                     .name("Guillem")
