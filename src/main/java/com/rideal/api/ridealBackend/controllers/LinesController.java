@@ -1,39 +1,40 @@
 package com.rideal.api.ridealBackend.controllers;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.rideal.api.ridealBackend.models.Company;
 import com.rideal.api.ridealBackend.models.Line;
 import com.rideal.api.ridealBackend.models.Stop;
 import com.rideal.api.ridealBackend.models.User;
 import com.rideal.api.ridealBackend.repositories.LineRepository;
+import com.rideal.api.ridealBackend.services.FCMService;
 import com.rideal.api.ridealBackend.services.LineService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @BasePathAwareController
 public class LinesController {
 
-    @Autowired
-    private LineService lineService;
-
+    private final LineService lineService;
     private final LineRepository linesRepository;
+    private final FCMService cloudMessaging;
 
-    public LinesController(LineRepository linesRepository) {
+    public LinesController(LineService lineService, LineRepository linesRepository, FCMService cloudMessaging) {
+        this.lineService = lineService;
         this.linesRepository = linesRepository;
+        this.cloudMessaging = cloudMessaging;
     }
 
     private <T> List<T> toList(Iterable<T> iterable) {
@@ -42,6 +43,25 @@ public class LinesController {
                 .collect(Collectors.toList());
     }
 
+    @PostMapping("/lines/{id}/setNotAvailable")
+    @ResponseBody
+    public ResponseEntity setLineNotAvailable(@PathVariable String id) throws InterruptedException, ExecutionException, FirebaseMessagingException {
+        final var lineOptional = this.linesRepository.findById(id);
+        if (lineOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        final var notification = new FCMService.RidealNotification(
+                "Line not available",
+                "Line " + lineOptional.get().getName() + " is not available due to maintenance",
+                Collections.emptyList()
+        );
+        cloudMessaging.sendNotification(notification);
+
+        lineOptional.get().setAvailable(false);
+        linesRepository.save(lineOptional.get());
+        return ResponseEntity.ok().build();
+
+    }
     @GetMapping("/lines")
     @ResponseBody
     public ResponseEntity<List<Line>> getLines() {

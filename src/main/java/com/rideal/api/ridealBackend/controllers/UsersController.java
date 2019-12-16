@@ -1,7 +1,9 @@
 package com.rideal.api.ridealBackend.controllers;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.rideal.api.ridealBackend.models.User;
 import com.rideal.api.ridealBackend.repositories.UserRepository;
+import com.rideal.api.ridealBackend.services.FCMService;
 import com.rideal.api.ridealBackend.services.PatchService;
 import com.rideal.api.ridealBackend.services.PhotoService;
 import com.rideal.api.ridealBackend.services.UserService;
@@ -14,8 +16,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.json.JsonPatch;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import static java.util.stream.Collectors.toList;
 
@@ -35,6 +39,9 @@ public class UsersController {
 
     @Autowired
     private PatchService patchService;
+
+    @Autowired
+    private FCMService cloudMessaging;
 
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers(
@@ -96,7 +103,7 @@ public class UsersController {
     }
 
     @PostMapping("/sendRequest/{id}")
-    public ResponseEntity sendRequest(@PathVariable String id) {
+    public ResponseEntity sendRequest(@PathVariable String id) throws InterruptedException, ExecutionException, FirebaseMessagingException {
         final var otherUser = userRepository.findById(id);
         if (otherUser.isEmpty())
             return ResponseEntity.notFound().build();
@@ -110,11 +117,19 @@ public class UsersController {
 
         requests.add(mySelf.getId());
         userRepository.save(otherUser.get());
+
+        final var notification = new FCMService.RidealNotification(
+                "Friend Request",
+                mySelf.getUsername() + " sent you a friend request",
+                Collections.singletonList(otherUser.get()));
+
+        cloudMessaging.sendNotification(notification);
+
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/acceptRequest/{id}")
-    public ResponseEntity<User> acceptRequest(@PathVariable String id) {
+    public ResponseEntity<User> acceptRequest(@PathVariable String id) throws InterruptedException, ExecutionException, FirebaseMessagingException {
         final var otherUser = userRepository.findById(id);
         if (otherUser.isEmpty())
             return ResponseEntity.notFound().build();
@@ -140,6 +155,13 @@ public class UsersController {
 
         userRepository.save(mySelf);
         userRepository.save(otherUser.get());
+
+        final var notification = new FCMService.RidealNotification(
+                "Friend Request Accepted",
+                mySelf.getUsername() + " accepted your  friend request",
+                Collections.singletonList(otherUser.get()));
+
+        cloudMessaging.sendNotification(notification);
 
         return ResponseEntity.ok(mySelf);
     }
