@@ -43,5 +43,4 @@ public class FeedController {
                 friendsIds.contains(feed.getUserId())).collect(Collectors.toList());
         return new ResponseEntity<>(myFeed, new HttpHeaders(), HttpStatus.OK);
     }
-
 }
