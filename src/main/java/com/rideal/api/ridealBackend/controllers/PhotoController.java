@@ -1,11 +1,13 @@
 package com.rideal.api.ridealBackend.controllers;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.util.Optional;
 
 import com.rideal.api.ridealBackend.models.Photo;
 import com.rideal.api.ridealBackend.services.PhotoService;
+import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,10 +28,11 @@ public class PhotoController {
     private PhotoService photoService;
 
     @GetMapping("/api/users/{id}/profile/image")
-    public ResponseEntity<byte[]> getPhoto(@PathVariable(value = "id") String userId) {
+    public ResponseEntity<byte[]> getPhoto(@PathVariable(value = "id") String userId) throws IOException {
         Optional<Photo> photoOptional = photoService.getPhoto(userId);
         if (photoOptional.isEmpty()) {
-            return new ResponseEntity<>(null, new HttpHeaders(), HttpStatus.NOT_FOUND);
+            InputStream in = getClass().getClassLoader().getResourceAsStream("static/defaultUser.png");
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(IOUtils.toByteArray(in));
         }
         Photo photo = photoOptional.get();
         byte[] image = photo.getImage().getData();
