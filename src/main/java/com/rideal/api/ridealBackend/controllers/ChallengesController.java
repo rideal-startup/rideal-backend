@@ -2,9 +2,15 @@ package com.rideal.api.ridealBackend.controllers;
 
 import com.rideal.api.ridealBackend.models.Challenge;
 import com.rideal.api.ridealBackend.models.Company;
+import com.rideal.api.ridealBackend.models.Progress;
 import com.rideal.api.ridealBackend.models.User;
 import com.rideal.api.ridealBackend.repositories.ChallengeRepository;
+import com.rideal.api.ridealBackend.repositories.ProgressRepository;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.rest.webmvc.BasePathAwareController;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -19,15 +26,60 @@ import java.util.stream.StreamSupport;
 public class ChallengesController {
 
     private final ChallengeRepository challengeRepository;
+    private final ProgressRepository progressRepository;
 
-    public ChallengesController(ChallengeRepository challengeRepository) {
+    public ChallengesController(ChallengeRepository challengeRepository, ProgressRepository progressRepository) {
         this.challengeRepository = challengeRepository;
+        this.progressRepository = progressRepository;
     }
 
     private <T> List<T> toList(Iterable<T> iterable) {
         return StreamSupport
                 .stream(iterable.spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/challenges/running")
+    @ResponseBody
+    public ResponseEntity<List<ChallengeDTO>> challengeRunning() {
+        final var userOptional = Optional.ofNullable(
+                (User) SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal()
+        );
+
+        if (userOptional.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        final var progresses = this.progressRepository.findAll();
+
+        final var userProgresses = progresses
+                .stream()
+                .filter(progress -> progress.getUser().equals(userOptional.get()))
+                .collect(Collectors.toList());
+
+        final var inProgressChallenges = userProgresses
+                .stream()
+                .map(Progress::getChallenge)
+                .collect(Collectors.toList());
+
+        final var challenges = this.challengeRepository.findAll()
+                .stream()
+                .filter(challenge -> !inProgressChallenges.contains(challenge))
+                .collect(Collectors.toList());
+
+        List<ChallengeDTO> result = challenges
+                .stream()
+                .map(ChallengeDTO::new)
+                .collect(Collectors.toList());
+
+        result.addAll(userProgresses
+                        .stream()
+                        .map(ChallengeDTO::new)
+                        .collect(Collectors.toList()));
+
+        return ResponseEntity.ok(result);
     }
 
     @GetMapping("/challenges")
@@ -58,5 +110,29 @@ public class ChallengesController {
                 toList(toList(challengeRepository.findAll()));
 
         return ResponseEntity.ok(result);
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ChallengeDTO {
+        private Challenge challenge;
+        private Integer progress;
+        private Long start;
+        private Long points;
+
+        public ChallengeDTO(Progress p) {
+            this.challenge = p.getChallenge();
+            this.progress = p.getProgress();
+            this.points = p.getPoints();
+            this.start = p.getStart();
+        }
+
+        public ChallengeDTO(Challenge c) {
+            this.challenge = c;
+            this.progress = null;
+            this.points = null;
+            this.start = null;
+        }
     }
 }

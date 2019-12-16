@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*")
@@ -12,4 +13,5 @@ import java.util.Optional;
 public interface ProgressRepository extends CrudRepository<Progress, String> {
     Optional<Progress> findByOrderByPoints();
     Optional<Progress> findByOrderByPointsAsc();
+    List<Progress> findAll();
 }

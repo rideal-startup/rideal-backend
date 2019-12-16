@@ -14,4 +14,5 @@ import java.util.Optional;
 public interface ChallengeRepository extends CrudRepository<Challenge, String> {
     Optional<Challenge> findById(String id);
     List<Challenge> findByCompany(Company company);
+    List<Challenge> findAll();
 }
