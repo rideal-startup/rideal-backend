@@ -15,8 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +40,36 @@ public class ChallengesController {
         return StreamSupport
                 .stream(iterable.spliterator(), false)
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping("/challenges/{id}/enroll")
+    @ResponseBody
+    public ResponseEntity enrollToChallenge(@PathVariable String id) {
+        final var userOptional = Optional.ofNullable(
+                (User) SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal()
+        );
+
+        if (userOptional.isEmpty())
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        final var challengeOptional = this.challengeRepository.findById(id);
+        if (challengeOptional.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        final var progress = Progress.builder()
+                .progress(0)
+                .user(userOptional.get())
+                .start(new Date().getTime())
+                .challenge(challengeOptional.get())
+                .points(0L)
+                .build();
+
+        progressRepository.save(progress);
+
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/challenges/running")
