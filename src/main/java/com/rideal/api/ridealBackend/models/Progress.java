@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @Data
@@ -16,8 +17,12 @@ import javax.persistence.MappedSuperclass;
 @Document(collection = "progresses")
 @MappedSuperclass
 public class Progress {
-    protected Long start;
-    protected Integer progress;
+
+    @Id
+    private String id;
+
+    private Long start;
+    private Integer progress;
 
     @DBRef
     User user;

@@ -21,6 +21,7 @@ public class DatabaseConfiguration implements RepositoryRestConfigurer {
         config.exposeIdsFor(Challenge.class);
         config.exposeIdsFor(Line.class);
         config.exposeIdsFor(TransportationMode.class);
+        config.exposeIdsFor(Progress.class);
     }
 
     @Autowired
