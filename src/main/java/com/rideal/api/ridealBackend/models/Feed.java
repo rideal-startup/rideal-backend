@@ -16,10 +16,13 @@ public class Feed {
 
     private String userId;
 
-    public Feed(String title, String description) {
+    private String username;
+
+    public Feed(String title, String description, String username) {
         super();
         this.title = title;
         this.description = description;
+        this.username = username;
     }
 
     @Override
@@ -28,6 +31,7 @@ public class Feed {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
                 '}';
     }
 }
